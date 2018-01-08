@@ -1,6 +1,7 @@
 import numpy as np
-from math import floor,atan2,degrees,sin,cos,radians, isnan
+from math import floor, atan2, degrees, sin, cos, radians, isnan
 from operator import methodcaller
+
 
 class Rectangular_Grid(object):
     """ Provides a rectangular topology based on square cells.
@@ -23,15 +24,15 @@ class Rectangular_Grid(object):
 
     """
 
-    def __init__(self,x_max,y_max,ndim=1,dim_names=None):
-        self.surface=np.zeros((ndim,x_max, y_max))
-        self.x_max=x_max
-        self.y_max=y_max
-        self.dim_names={}
-        for i in range(0,ndim): self.dim_names[dim_names[i]]=i
+    def __init__(self, x_max, y_max, ndim=1, dim_names=None):
+        self.surface = np.zeros((ndim, x_max, y_max))
+        self.x_max = x_max
+        self.y_max = y_max
+        self.dim_names = {}
+        for i in range(0, ndim):
+            self.dim_names[dim_names[i]] = i
 
-
-    def load_surface(self,surface,dim_names):
+    def load_surface(self, surface, dim_names):
         """ Load the surface from a nparray.
 
             This could have been read from a file or passed by another program.
@@ -44,20 +45,20 @@ class Rectangular_Grid(object):
             None.
 
         """
-        self.surface=surface
-        if len(surface.shape)>=3:
-            ndim=surface.shape[0]
-            self.x_max=surface.shape[1]
-            self.y_max=surface.shape[2]
-            self.dim_names={}
-            for i in range(0,ndim): self.dim_names[dim_names[i]]=i
+        self.surface = surface
+        if len(surface.shape) >= 3:
+            ndim = surface.shape[0]
+            self.x_max = surface.shape[1]
+            self.y_max = surface.shape[2]
+            self.dim_names = {}
+            for i in range(0, ndim):
+                self.dim_names[dim_names[i]] = i
 
         else:
-            self.x_max=surface.shape[0]
-            self.y_max=surface.shape[1]
+            self.x_max = surface.shape[0]
+            self.y_max = surface.shape[1]
 
-
-    def value(self,dim,cell):
+    def value(self, dim, cell):
         """Verify the value in the 'dim' layer (dimension) of information in the grid's surface for the 'cell'.
 
         Args:
@@ -71,7 +72,7 @@ class Rectangular_Grid(object):
         """
         return self.surface[self.dim_names[dim]][cell]
 
-    def change_value(self,dim,cell,new_value):
+    def change_value(self, dim, cell, new_value):
         """ Change the value of 'cell' in the 'dim' layer (dimension) of information in the grid's surface.
 
         Args:
@@ -84,10 +85,9 @@ class Rectangular_Grid(object):
 
 
         """
-        self.surface[self.dim_names[dim]][cell]=new_value
+        self.surface[self.dim_names[dim]][cell] = new_value
 
-
-    def hood(self,cell,radius=1,remove_center=True):
+    def hood(self, cell, radius=1, remove_center=True):
         """ Return the cells that comprise the neighborhood of 'cell'.
 
             Note: with radius=1 and remove_center=False, the result is the Moore neighborhood of 'cell' (i.e. 'cell' itself and the 8 adjacent cells). With radius=>2, the result is an extended Moore neighborhood with the numer of cells=(2*radius+1)^2 (subtract 1 if remove_center=True)
@@ -101,11 +101,13 @@ class Rectangular_Grid(object):
             (list) of tuples with the coordinates '(x,y)' of cells comprising the neighborhood of 'cell'.
 
         """
-        hood=[self.in_bounds((x,y)) for x in range(cell[0]-radius,cell[0]+radius+1) for y in range(cell[1]-radius,cell[1]+radius+1)]
-        if remove_center: hood.remove(cell)
+        hood = [self.in_bounds((x, y)) for x in range(cell[0] - radius, cell[0] + radius + 1)
+                for y in range(cell[1] - radius, cell[1] + radius + 1)]
+        if remove_center:
+            hood.remove(cell)
         return hood
 
-    def circle(self,center,radius):
+    def circle(self, center, radius):
         """ Returns the cells that are included within a circle centered in 'center'
 
         Args:
@@ -116,24 +118,25 @@ class Rectangular_Grid(object):
             (list) of tuples (x,y) with coodinates of cells included in the circle.
         """
 
-        xmax=center[0]+radius+1
-        if xmax>self.x_max: xmax=self.x_max
-        ymax=center[1]+radius+1
-        if ymax>self.y_max: ymax=self.y_max
-        xmin=center[0]-radius-1
-        if xmin<0: xmin=0
-        ymin=center[1]-radius-1
-        if ymin<0: ymin=0
+        xmax = center[0] + radius + 1
+        if xmax > self.x_max:
+            xmax = self.x_max
+        ymax = center[1] + radius + 1
+        if ymax > self.y_max:
+            ymax = self.y_max
+        xmin = center[0] - radius - 1
+        if xmin < 0:
+            xmin = 0
+        ymin = center[1] - radius - 1
+        if ymin < 0:
+            ymin = 0
 
-
-
-        pixels_in_circle=[(x,y) for x in range(xmin,xmax) for y in range(ymin,ymax) if self.euclid_dist(x0=x,x1=center[0],y0=y,y1=center[1])<radius ]
+        pixels_in_circle = [(x, y) for x in range(xmin, xmax) for y in range(
+            ymin, ymax) if self.euclid_dist(x0=x, x1=center[0], y0=y, y1=center[1]) < radius]
 
         return pixels_in_circle
 
-
-
-    def angle_cells(self,point0,point1):
+    def angle_cells(self, point0, point1):
         """ Return the angle between the points (x0,y0) and (x1,y1).
 
             Note: angle is in degrees.
@@ -145,24 +148,21 @@ class Rectangular_Grid(object):
         Returns:
             (float): The angle of a straight line from point0 to point1 in relation to the bottom edge of the grid.
         """
-        x0,y0=point0
-        x1,y1=point1
+        x0, y0 = point0
+        x1, y1 = point1
 
-        deltax=x0-x1
-        deltay=y0-y1
+        deltax = x0 - x1
+        deltay = y0 - y1
 
-        return degrees(atan2(deltay,deltax))
+        return degrees(atan2(deltay, deltax))
 
-
-
-    def agents_within_patches(self,patches,agent_type):
+    def agents_within_patches(self, patches, agent_type):
         """Return a list of tuples (agent_id,agent_position) of 'agent_type' within the area.
          """
 
         pass
 
-
-    def in_bounds(self,pos):
+    def in_bounds(self, pos):
         """ Adjust point to grid.
 
             Check if 'pos' is withn the grid boundaries. If so returns 'pos'.
@@ -174,26 +174,24 @@ class Rectangular_Grid(object):
             Returns:
                 (tuple): adjusted (if necessary) (x,y) coordinates pair.
         """
-        x,y=pos
+        x, y = pos
 
-        xmax=self.x_max-1
-        ymax=self.y_max-1
+        xmax = self.x_max - 1
+        ymax = self.y_max - 1
 
-        if x<0:
-            x=xmax-(abs(x)%xmax)
-        elif x>xmax:
-            x=0+(x%xmax)
+        if x < 0:
+            x = xmax - (abs(x) % xmax)
+        elif x > xmax:
+            x = 0 + (x % xmax)
 
-        if y<0:
-            y=ymax-(abs(y)%ymax)
-        elif y>ymax:
-            y=0+(y%ymax)
+        if y < 0:
+            y = ymax - (abs(y) % ymax)
+        elif y > ymax:
+            y = 0 + (y % ymax)
 
-        return (x,y)
+        return (x, y)
 
-
-
-    def cell_with_value(self,cells,value,dim):
+    def cell_with_value(self, cells, value, dim):
         """ Check which cells in a list of 'cells' match a 'value' for given 'dim'.
 
         Args:
@@ -204,10 +202,9 @@ class Rectangular_Grid(object):
         Returns:
             [list] of cells (x,y) that match value in the specified dimension.
         """
-        return [c for c in cells if self.surface[self.dim_names[dim]][c]==value]
+        return [c for c in cells if self.surface[self.dim_names[dim]][c] == value]
 
-
-    def euclidean_distance(self,x1,y1,x2,y2):
+    def euclidean_distance(self, x1, y1, x2, y2):
         """ Calculate the euclidean distance between two points.
 
         Args:
@@ -219,9 +216,9 @@ class Rectangular_Grid(object):
         Returns:
             (float): euclidean distance.
         """
-        return np.sqrt((x1-x2)**2+(y1-y2)**2)
+        return np.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
-    def scaled_distance(self,x1,y1,x2,y2,scale=20):
+    def scaled_distance(self, x1, y1, x2, y2, scale=20):
         """ Calculate the euclidean distance between two points and scales it.
 
             Note:Since each cell can represent any distance, this method can be used to calculate the distance in meter, kilometer, etc instead of grid cells.
@@ -237,11 +234,10 @@ class Rectangular_Grid(object):
             (float): euclidean distance multiplied by 'scale'.
         """
 
-        return self.euclidean_distance(x1,y1,x2,y2)*scale
+        return self.euclidean_distance(x1, y1, x2, y2) * scale
 
-
-    def point_within_circle(self,x1,y1,r1,x2,y2,
-    distance_func,**kwargs):
+    def point_within_circle(self, x1, y1, r1, x2, y2,
+                            distance_func, **kwargs):
         """Check if a point is within a circle.
 
         Args:
@@ -254,10 +250,9 @@ class Rectangular_Grid(object):
         Returns:
             (bool): True if point is withn circle.
         """
-        return distance_func(x1,y1,x2,y2,**kwargs)<r1
+        return distance_func(x1, y1, x2, y2, **kwargs) < r1
 
-
-    def line_overlap_circle(self,cx,cy,r,x1,y1,x2,y2):
+    def line_overlap_circle(self, cx, cy, r, x1, y1, x2, y2):
         """ Check if the straight line connecting two point overlaps a circle.
 
         Args:
@@ -274,9 +269,9 @@ class Rectangular_Grid(object):
 
         """
 
-        return self.pDist(cx,cy,x1,y1,x2,y2)<r
+        return self.pDist(cx, cy, x1, y1, x2, y2) < r
 
-    def circle_overlap_circle(self,x1,y1,r1,x2,y2,r2):
+    def circle_overlap_circle(self, x1, y1, r1, x2, y2, r2):
         """ Check if two circles overlap.
 
         Args:
@@ -292,29 +287,27 @@ class Rectangular_Grid(object):
 
         """
 
-        return self.euclidean_distance(x1,x2,y1,y2)<=r1+r2
+        return self.euclidean_distance(x1, x2, y1, y2) <= r1 + r2
 
+    def rand_point_along_line(self, x0, y0, x1, y1, offset=0):
+        px = np.random.rand() * (x1 + x0)
+        if px > (x1 + offset) or np.isnan(px):
+            px = x1 + offset
 
+        try:
+            m = (y1 - y0) / (x1 - x0)
+        except:
+            m = 0
+        py = m * px + np.random.rand() * (y1 + y0) * offset
 
-    def rand_point_along_line(self,x0,y0,x1,y1,offset=0):
-          px=np.random.rand()*(x1+x0)
-          if px>(x1+offset) or np.isnan(px):
-              px=x1+offset
+        if py < (y0 - offset) or np.isnan(py):
+            py = y0 - offset
+        if py > (y1 + offset):
+            py = y1 + offset
 
-          try:
-             m=(y1-y0)/(x1-x0)
-          except:
-             m=0
-          py=m*px+np.random.rand()*(y1+y0)*offset
+        return (round(px, 2), round(py, 2))
 
-          if py<(y0-offset) or np.isnan(py):
-              py=y0-offset
-          if py>(y1+offset):
-              py=y1+offset
-
-          return (round(px,2),round(py,2))
-
-    def rectangle_overlap_circle(self,cx,cy,r, x1,y1,x2,y2,x3,y3,x4,y4):
+    def rectangle_overlap_circle(self, cx, cy, r, x1, y1, x2, y2, x3, y3, x4, y4):
         """ Check a rectangle and a circle overlap.
 
         Args:
@@ -336,20 +329,23 @@ class Rectangular_Grid(object):
 
         """
 
-        vertices=[(x1,y1),(x2,y2),(x3,y3),(x4,y4)]
-        vertices_within=[self.point_within_circle(cx,cy,r,x,y,distance_func=self.euclidean_distance) for x,y in vertices]
+        vertices = [(x1, y1), (x2, y2), (x3, y3), (x4, y4)]
+        vertices_within = [self.point_within_circle(
+            cx, cy, r, x, y, distance_func=self.euclidean_distance) for x, y in vertices]
 
         if any(vertices_within):
             return True
 
-        overlapping_sides=[]
+        overlapping_sides = []
         for v1 in vertices:
             for v2 in vertices:
-                if v1!=v2: overlapping_sides.append(self.pDist(cx,cy,v1[0],v1[1],v2[0],v2[1])<r)
+                if v1 != v2:
+                    overlapping_sides.append(self.pDist(
+                        cx, cy, v1[0], v1[1], v2[0], v2[1]) < r)
 
         return any(overlapping_sides)
 
-    def line_between_points(self,x0, y0, x1, y1):
+    def line_between_points(self, x0, y0, x1, y1):
         """ Gives the cell coordinates (integers) for the aproximate line between two cells using bresenham's line algorithm.
 
         Args:
@@ -363,7 +359,6 @@ class Rectangular_Grid(object):
             (list): list of tuples with cells coordinates. The initial and final cells are excluded.
 
         """
-
 
         dx = x1 - x0
         dy = y1 - y0
@@ -380,21 +375,20 @@ class Rectangular_Grid(object):
             dx, dy = dy, dx
             xx, xy, yx, yy = 0, ysign, xsign, 0
 
-        D = 2*dy - dx
+        D = 2 * dy - dx
         y = 0
 
-        output=[]
+        output = []
 
-        for x in range(1,dx):
-            output.append((x0 + x*xx + y*yx, y0 + x*xy + y*yy))
+        for x in range(1, dx):
+            output.append((x0 + x * xx + y * yx, y0 + x * xy + y * yy))
             if D > 0:
                 y += 1
                 D -= dx
             D += dy
         return output
 
-
-    def pDist(self,px,py,sx1,sy1,sx2,sy2):
+    def pDist(self, px, py, sx1, sy1, sx2, sy2):
         """ Calculate the minimum euclidean distance between a point and a line segment.
 
         Args:
@@ -412,33 +406,33 @@ class Rectangular_Grid(object):
         """
         #d=abs((sy2-sy1)*px-(sx2-sx1)*py + sx2*sy1-sy2*sx1)
 
-        #return d/euclidean_distance(sx1,sy1,sx2,sy2)
+        # return d/euclidean_distance(sx1,sy1,sx2,sy2)
 
-        A=px-sx1
-        B=py-sy1
-        C=sx2-sx1
-        D=sy2-sy1
+        A = px - sx1
+        B = py - sy1
+        C = sx2 - sx1
+        D = sy2 - sy1
 
-        dot=A*C+B*D
-        len_sq=C*C+D*D
-        param=-1
-        if len_sq!=0:
-            param=dot/len_sq
+        dot = A * C + B * D
+        len_sq = C * C + D * D
+        param = -1
+        if len_sq != 0:
+            param = dot / len_sq
 
-        xx=0
-        yy=0
+        xx = 0
+        yy = 0
 
-        if param<0:
-            xx=sx1
-            yy=sy1
-        elif param>1:
-            xx=sx2
-            yy=sy2
+        if param < 0:
+            xx = sx1
+            yy = sy1
+        elif param > 1:
+            xx = sx2
+            yy = sy2
         else:
-            xx=sx1+param*C
-            yy=sy1+param*D
+            xx = sx1 + param * C
+            yy = sy1 + param * D
 
-        dx=px-xx
-        dy=py-yy
+        dx = px - xx
+        dy = py - yy
 
-        return np.sqrt(dx*dx+dy*dy)
+        return np.sqrt(dx * dx + dy * dy)
