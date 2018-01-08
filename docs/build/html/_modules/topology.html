@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>topology &mdash; py_ibm 0.1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="py_ibm 0.1.1 documentation" href="../index.html"/>
+        <link rel="up" title="Module code" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> py_ibm
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../world.html">World Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">Topology Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agent.html">Tree Agent Module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">py_ibm</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>topology</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for topology</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">floor</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">radians</span><span class="p">,</span> <span class="n">isnan</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">methodcaller</span>
+
+
+<div class="viewcode-block" id="Rectangular_Grid"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid">[docs]</a><span class="k">class</span> <span class="nc">Rectangular_Grid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Provides a rectangular topology based on square cells.</span>
+
+<span class="sd">        The grid can be 3-dimensional and store different layers of data in the z axis.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x_max (int): number of cells on horizontal axis.</span>
+<span class="sd">        y_max (int): number of cells on vertical axis.</span>
+<span class="sd">        ndim (int): number of dimensions</span>
+<span class="sd">        dim_names (list): list os strings. Each element must be the name for one dimension.</span>
+
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        x_max (int): number of cells on horizontal axis.</span>
+<span class="sd">        y_max (int): number of cells on vertical axis.</span>
+<span class="sd">        ndim (int): number of dimensions</span>
+<span class="sd">        dim_names (list): list os strings. Each element must be the name for one dimension.</span>
+<span class="sd">        surface (nparray): a x_max by y_max by ndim array to keep data for the different dimensions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ndim</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">=</span> <span class="n">x_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_max</span> <span class="o">=</span> <span class="n">y_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim_names</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dim_names</span><span class="p">[</span><span class="n">dim_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
+
+<div class="viewcode-block" id="Rectangular_Grid.load_surface"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.load_surface">[docs]</a>    <span class="k">def</span> <span class="nf">load_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="n">dim_names</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Load the surface from a nparray.</span>
+
+<span class="sd">            This could have been read from a file or passed by another program.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            surface (nparray): nparray with values to be loaded as layers in the surface. Minimum of 2 dimensions required, in which case only one layer of information is represented. The x and y dimensions of the grid will be determined by the x and y length of this argument.</span>
+<span class="sd">            dim_names (list): a list of names for the layers in the 3d dimesnion of the surface argument. If &#39;surface&#39; is a 2d array, this argument will be ignored.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">surface</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">ndim</span> <span class="o">=</span> <span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">=</span> <span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_max</span> <span class="o">=</span> <span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dim_names</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ndim</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dim_names</span><span class="p">[</span><span class="n">dim_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">=</span> <span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_max</span> <span class="o">=</span> <span class="n">surface</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.value"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Verify the value in the &#39;dim&#39; layer (dimension) of information in the grid&#39;s surface for the &#39;cell&#39;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dim (str): name of dimension.</span>
+<span class="sd">            cell (tuple): (x,y), patch coordinates.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): the value of &#39;cell&#39; in &#39;dim&#39;</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_names</span><span class="p">[</span><span class="n">dim</span><span class="p">]][</span><span class="n">cell</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.change_value"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.change_value">[docs]</a>    <span class="k">def</span> <span class="nf">change_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">new_value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Change the value of &#39;cell&#39; in the &#39;dim&#39; layer (dimension) of information in the grid&#39;s surface.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dim (str): name of dimension.</span>
+<span class="sd">            cell (tuple): (x,y), patch coordinates.</span>
+<span class="sd">            new_value (float): new value for cell.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_names</span><span class="p">[</span><span class="n">dim</span><span class="p">]][</span><span class="n">cell</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.hood"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.hood">[docs]</a>    <span class="k">def</span> <span class="nf">hood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">remove_center</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the cells that comprise the neighborhood of &#39;cell&#39;.</span>
+
+<span class="sd">            Note: with radius=1 and remove_center=False, the result is the Moore neighborhood of &#39;cell&#39; (i.e. &#39;cell&#39; itself and the 8 adjacent cells). With radius=&gt;2, the result is an extended Moore neighborhood with the numer of cells=(2*radius+1)^2 (subtract 1 if remove_center=True)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cell (tuple): (x,y), patch coordinates of the center cell.</span>
+<span class="sd">            radius (int): how many grid cells (Tchebychev distance) any cell needs to be from the center to be included in the neighborhood.</span>
+<span class="sd">            remove_center (bool): If True &#39;cell&#39; is not included in the final list of cells.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list) of tuples with the coordinates &#39;(x,y)&#39; of cells comprising the neighborhood of &#39;cell&#39;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hood</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">in_bounds</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">radius</span><span class="p">,</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">radius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">radius</span><span class="p">,</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">radius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">remove_center</span><span class="p">:</span>
+            <span class="n">hood</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hood</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.circle"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.circle">[docs]</a>    <span class="k">def</span> <span class="nf">circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the cells that are included within a circle centered in &#39;center&#39;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            center (tupple): (x,y) coordinates of cell in the center of circle.</span>
+<span class="sd">            radius (float): radius of circle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list) of tuples (x,y) with coodinates of cells included in the circle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">xmax</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">radius</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">xmax</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">:</span>
+            <span class="n">xmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">radius</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">ymax</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max</span><span class="p">:</span>
+            <span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max</span>
+        <span class="n">xmin</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">radius</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">xmin</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">xmin</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ymin</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">radius</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">ymin</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ymin</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">pixels_in_circle</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
+            <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">euclid_dist</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y0</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">y1</span><span class="o">=</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">radius</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">pixels_in_circle</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.angle_cells"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.angle_cells">[docs]</a>    <span class="k">def</span> <span class="nf">angle_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point0</span><span class="p">,</span> <span class="n">point1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the angle between the points (x0,y0) and (x1,y1).</span>
+
+<span class="sd">            Note: angle is in degrees.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point0 (tuple): (x,y) coodinates of point 0.</span>
+<span class="sd">            point1 (tuple): (x,y) coodinates of point 1.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): The angle of a straight line from point0 to point1 in relation to the bottom edge of the grid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">point0</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">point1</span>
+
+        <span class="n">deltax</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">x1</span>
+        <span class="n">deltay</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">-</span> <span class="n">y1</span>
+
+        <span class="k">return</span> <span class="n">degrees</span><span class="p">(</span><span class="n">atan2</span><span class="p">(</span><span class="n">deltay</span><span class="p">,</span> <span class="n">deltax</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.agents_within_patches"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.agents_within_patches">[docs]</a>    <span class="k">def</span> <span class="nf">agents_within_patches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">patches</span><span class="p">,</span> <span class="n">agent_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of tuples (agent_id,agent_position) of &#39;agent_type&#39; within the area.</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.in_bounds"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.in_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">in_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Adjust point to grid.</span>
+
+<span class="sd">            Check if &#39;pos&#39; is withn the grid boundaries. If so returns &#39;pos&#39;.</span>
+<span class="sd">            If not adjust &#39;pos&#39; to fall within boundaries. This method implements adjustment considering the grid as a Torus (i.e. extremities are adjacent).</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                pos (tuple): (x,y) coordinates pair.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                (tuple): adjusted (if necessary) (x,y) coordinates pair.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">pos</span>
+
+        <span class="n">xmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">xmax</span> <span class="o">-</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">%</span> <span class="n">xmax</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">xmax</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="n">xmax</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">ymax</span> <span class="o">-</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">%</span> <span class="n">ymax</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">ymax</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">%</span> <span class="n">ymax</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.cell_with_value"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.cell_with_value">[docs]</a>    <span class="k">def</span> <span class="nf">cell_with_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check which cells in a list of &#39;cells&#39; match a &#39;value&#39; for given &#39;dim&#39;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cells (list): list of tuples (x,y).</span>
+<span class="sd">            value (float): value to be matched.</span>
+<span class="sd">            dim (str): surface dimension (layer) name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [list] of cells (x,y) that match value in the specified dimension.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cells</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dim_names</span><span class="p">[</span><span class="n">dim</span><span class="p">]][</span><span class="n">c</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.euclidean_distance"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.euclidean_distance">[docs]</a>    <span class="k">def</span> <span class="nf">euclidean_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the euclidean distance between two points.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x1 (float): x coordinate for point 1.</span>
+<span class="sd">            y1 (float): y coordinate for point 1.</span>
+<span class="sd">            x2 (float): x coordinate for point 2.</span>
+<span class="sd">            y2 (float): y coordinate for point 2.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): euclidean distance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.scaled_distance"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.scaled_distance">[docs]</a>    <span class="k">def</span> <span class="nf">scaled_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the euclidean distance between two points and scales it.</span>
+
+<span class="sd">            Note:Since each cell can represent any distance, this method can be used to calculate the distance in meter, kilometer, etc instead of grid cells.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x1 (float): x coordinate for point 1.</span>
+<span class="sd">            y1 (float): y coordinate for point 1.</span>
+<span class="sd">            x2 (float): x coordinate for point 2.</span>
+<span class="sd">            y2 (float): y coordinate for point 2.</span>
+<span class="sd">            scale (float): scaling factor.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): euclidean distance multiplied by &#39;scale&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">euclidean_distance</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.point_within_circle"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.point_within_circle">[docs]</a>    <span class="k">def</span> <span class="nf">point_within_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span>
+                            <span class="n">distance_func</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if a point is within a circle.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x1 (float): x coordinate for point.</span>
+<span class="sd">            y1 (float): y coordinate for point.</span>
+<span class="sd">            r1 (float): radius.</span>
+<span class="sd">            x2 (float): x coordinate for the center of the circle.</span>
+<span class="sd">            y2 (float): y coordinate for the center of the circle..</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (bool): True if point is withn circle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">distance_func</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">r1</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.line_overlap_circle"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.line_overlap_circle">[docs]</a>    <span class="k">def</span> <span class="nf">line_overlap_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if the straight line connecting two point overlaps a circle.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x1 (float): x coordinate for point 1.</span>
+<span class="sd">            y1 (float): y coordinate for point 1.</span>
+<span class="sd">            x2 (float): x coordinate for point 2.</span>
+<span class="sd">            y2 (float): y coordinate for point 2.</span>
+<span class="sd">            cx (float): x coordinate for the center of the circle.</span>
+<span class="sd">            cy (float): y coordinate for the center of the circle.</span>
+<span class="sd">            r (float): radius for circle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (bool): True if line and circle overlap.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pDist</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">r</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.circle_overlap_circle"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.circle_overlap_circle">[docs]</a>    <span class="k">def</span> <span class="nf">circle_overlap_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">r2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if two circles overlap.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x1 (float): x coordinate for center 1.</span>
+<span class="sd">            y1 (float): y coordinate for center 1.</span>
+<span class="sd">            x2 (float): x coordinate for center 2.</span>
+<span class="sd">            x2 (float): y coordinate for center 2.</span>
+<span class="sd">            r1 (float): radius for circle 1.</span>
+<span class="sd">            r2 (float): radius for circle 2.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (bool): True if circles overlap.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">euclidean_distance</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">r1</span> <span class="o">+</span> <span class="n">r2</span></div>
+
+    <span class="k">def</span> <span class="nf">rand_point_along_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">px</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">px</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">px</span><span class="p">):</span>
+            <span class="n">px</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">offset</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">py</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="n">px</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">y0</span><span class="p">)</span> <span class="o">*</span> <span class="n">offset</span>
+
+        <span class="k">if</span> <span class="n">py</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">y0</span> <span class="o">-</span> <span class="n">offset</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">py</span><span class="p">):</span>
+            <span class="n">py</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">-</span> <span class="n">offset</span>
+        <span class="k">if</span> <span class="n">py</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">offset</span><span class="p">):</span>
+            <span class="n">py</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">offset</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">py</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Rectangular_Grid.rectangle_overlap_circle"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.rectangle_overlap_circle">[docs]</a>    <span class="k">def</span> <span class="nf">rectangle_overlap_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">x4</span><span class="p">,</span> <span class="n">y4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check a rectangle and a circle overlap.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cx (float): x coordinate for circle center.</span>
+<span class="sd">            cy (float): y coordinate for circle center.</span>
+<span class="sd">            r1 (float): radius for circle.</span>
+<span class="sd">            x1 (float): x coordinate for 1st rectangle vertice.</span>
+<span class="sd">            y1 (float): y coordinate for 1st rectangle vertice.</span>
+<span class="sd">            x2 (float): x coordinate for 2nd rectangle vertice.</span>
+<span class="sd">            x2 (float): y coordinate for 2nd rectangle vertice.</span>
+<span class="sd">            x3 (float): x coordinate for 3rd rectangle vertice.</span>
+<span class="sd">            y3 (float): y coordinate for 3rd rectangle vertice.</span>
+<span class="sd">            x4 (float): x coordinate for 4th rectangle vertice.</span>
+<span class="sd">            x4 (float): y coordinate for 4th rectangle vertice.</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (bool): True if circle and rectangle overlap.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span> <span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">),</span> <span class="p">(</span><span class="n">x4</span><span class="p">,</span> <span class="n">y4</span><span class="p">)]</span>
+        <span class="n">vertices_within</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">point_within_circle</span><span class="p">(</span>
+            <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">distance_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">euclidean_distance</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">vertices_within</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">overlapping_sides</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v1</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v2</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">v1</span> <span class="o">!=</span> <span class="n">v2</span><span class="p">:</span>
+                    <span class="n">overlapping_sides</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pDist</span><span class="p">(</span>
+                        <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">v1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">overlapping_sides</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.line_between_points"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.line_between_points">[docs]</a>    <span class="k">def</span> <span class="nf">line_between_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Gives the cell coordinates (integers) for the aproximate line between two cells using bresenham&#39;s line algorithm.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x0 (int): x coordinate for initial cell.</span>
+<span class="sd">            y0 (int): y coordinate for initial cell.</span>
+<span class="sd">            x1 (int): x coordinate for final cell.</span>
+<span class="sd">            y1 (int): x coordinate for final cell.</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (list): list of tuples with cells coordinates. The initial and final cells are excluded.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span>
+
+        <span class="n">xsign</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">dx</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">ysign</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">dy</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="n">dx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dx</span><span class="p">)</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dy</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dx</span> <span class="o">&gt;</span> <span class="n">dy</span><span class="p">:</span>
+            <span class="n">xx</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">yx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">xsign</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ysign</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dx</span>
+            <span class="n">xx</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">yx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ysign</span><span class="p">,</span> <span class="n">xsign</span><span class="p">,</span> <span class="mi">0</span>
+
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dy</span> <span class="o">-</span> <span class="n">dx</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dx</span><span class="p">):</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x0</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">xx</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">yx</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">xy</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">yy</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">D</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">D</span> <span class="o">-=</span> <span class="n">dx</span>
+            <span class="n">D</span> <span class="o">+=</span> <span class="n">dy</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="Rectangular_Grid.pDist"><a class="viewcode-back" href="../topology.html#topology.Rectangular_Grid.pDist">[docs]</a>    <span class="k">def</span> <span class="nf">pDist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">sx1</span><span class="p">,</span> <span class="n">sy1</span><span class="p">,</span> <span class="n">sx2</span><span class="p">,</span> <span class="n">sy2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the minimum euclidean distance between a point and a line segment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            px (float): x coordinate for point.</span>
+<span class="sd">            py (float): y coordinate for point.</span>
+<span class="sd">            sx1 (float): x coordinate for point 1 in line segment.</span>
+<span class="sd">            sy1 (float): y coordinate for point 1 in line segment.</span>
+<span class="sd">            sx2 (float): x coordinate for point 2 in line segment.</span>
+<span class="sd">            sy2 (float): y coordinate for point 2 in line segment.</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            (float): minimum euclidean distance between point and line segment.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#d=abs((sy2-sy1)*px-(sx2-sx1)*py + sx2*sy1-sy2*sx1)</span>
+
+        <span class="c1"># return d/euclidean_distance(sx1,sy1,sx2,sy2)</span>
+
+        <span class="n">A</span> <span class="o">=</span> <span class="n">px</span> <span class="o">-</span> <span class="n">sx1</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">py</span> <span class="o">-</span> <span class="n">sy1</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">sx2</span> <span class="o">-</span> <span class="n">sx1</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">sy2</span> <span class="o">-</span> <span class="n">sy1</span>
+
+        <span class="n">dot</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">C</span> <span class="o">+</span> <span class="n">B</span> <span class="o">*</span> <span class="n">D</span>
+        <span class="n">len_sq</span> <span class="o">=</span> <span class="n">C</span> <span class="o">*</span> <span class="n">C</span> <span class="o">+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">D</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">len_sq</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">param</span> <span class="o">=</span> <span class="n">dot</span> <span class="o">/</span> <span class="n">len_sq</span>
+
+        <span class="n">xx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">yy</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">param</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">xx</span> <span class="o">=</span> <span class="n">sx1</span>
+            <span class="n">yy</span> <span class="o">=</span> <span class="n">sy1</span>
+        <span class="k">elif</span> <span class="n">param</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">xx</span> <span class="o">=</span> <span class="n">sx2</span>
+            <span class="n">yy</span> <span class="o">=</span> <span class="n">sy2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xx</span> <span class="o">=</span> <span class="n">sx1</span> <span class="o">+</span> <span class="n">param</span> <span class="o">*</span> <span class="n">C</span>
+            <span class="n">yy</span> <span class="o">=</span> <span class="n">sy1</span> <span class="o">+</span> <span class="n">param</span> <span class="o">*</span> <span class="n">D</span>
+
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">px</span> <span class="o">-</span> <span class="n">xx</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">py</span> <span class="o">-</span> <span class="n">yy</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dx</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">*</span> <span class="n">dy</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Fabio Frazao.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Topology Module &mdash; py_ibm 0.1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="py_ibm 0.1.1 documentation" href="index.html"/>
+        <link rel="prev" title="World Module" href="world.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> py_ibm
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="world.html">World Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Topology Module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py_ibm</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Topology Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/topology.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="topology-module">
+<h1>Topology Module<a class="headerlink" href="#topology-module" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-topology"></span><dl class="class">
+<dt id="topology.Rectangular_Grid">
+<em class="property">class </em><code class="descclassname">topology.</code><code class="descname">Rectangular_Grid</code><span class="sig-paren">(</span><em>x_max</em>, <em>y_max</em>, <em>ndim=1</em>, <em>dim_names=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides a rectangular topology based on square cells.</p>
+<blockquote>
+<div>The grid can be 3-dimensional and store different layers of data in the z axis.</div></blockquote>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>x_max (int): number of cells on horizontal axis.
+y_max (int): number of cells on vertical axis.
+ndim (int): number of dimensions
+dim_names (list): list os strings. Each element must be the name for one dimension.</dd>
+<dt>Attributes:</dt>
+<dd>x_max (int): number of cells on horizontal axis.
+y_max (int): number of cells on vertical axis.
+ndim (int): number of dimensions
+dim_names (list): list os strings. Each element must be the name for one dimension.
+surface (nparray): a x_max by y_max by ndim array to keep data for the different dimensions.</dd>
+</dl>
+<dl class="method">
+<dt id="topology.Rectangular_Grid.agents_within_patches">
+<code class="descname">agents_within_patches</code><span class="sig-paren">(</span><em>patches</em>, <em>agent_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.agents_within_patches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.agents_within_patches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of tuples (agent_id,agent_position) of ‘agent_type’ within the area.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.angle_cells">
+<code class="descname">angle_cells</code><span class="sig-paren">(</span><em>point0</em>, <em>point1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.angle_cells"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.angle_cells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the angle between the points (x0,y0) and (x1,y1).</p>
+<blockquote>
+<div>Note: angle is in degrees.</div></blockquote>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>point0 (tuple): (x,y) coodinates of point 0.
+point1 (tuple): (x,y) coodinates of point 1.</dd>
+<dt>Returns:</dt>
+<dd>(float): The angle of a straight line from point0 to point1 in relation to the bottom edge of the grid.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.cell_with_value">
+<code class="descname">cell_with_value</code><span class="sig-paren">(</span><em>cells</em>, <em>value</em>, <em>dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.cell_with_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.cell_with_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check which cells in a list of ‘cells’ match a ‘value’ for given ‘dim’.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>cells (list): list of tuples (x,y).
+value (float): value to be matched.
+dim (str): surface dimension (layer) name.</dd>
+<dt>Returns:</dt>
+<dd>[list] of cells (x,y) that match value in the specified dimension.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.change_value">
+<code class="descname">change_value</code><span class="sig-paren">(</span><em>dim</em>, <em>cell</em>, <em>new_value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.change_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.change_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the value of ‘cell’ in the ‘dim’ layer (dimension) of information in the grid’s surface.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>dim (str): name of dimension.
+cell (tuple): (x,y), patch coordinates.
+new_value (float): new value for cell.</dd>
+<dt>Returns:</dt>
+<dd>None.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.circle">
+<code class="descname">circle</code><span class="sig-paren">(</span><em>center</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the cells that are included within a circle centered in ‘center’</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>center (tupple): (x,y) coordinates of cell in the center of circle.
+radius (float): radius of circle.</dd>
+<dt>Returns:</dt>
+<dd>(list) of tuples (x,y) with coodinates of cells included in the circle.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.circle_overlap_circle">
+<code class="descname">circle_overlap_circle</code><span class="sig-paren">(</span><em>x1</em>, <em>y1</em>, <em>r1</em>, <em>x2</em>, <em>y2</em>, <em>r2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.circle_overlap_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.circle_overlap_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if two circles overlap.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>x1 (float): x coordinate for center 1.
+y1 (float): y coordinate for center 1.
+x2 (float): x coordinate for center 2.
+x2 (float): y coordinate for center 2.
+r1 (float): radius for circle 1.
+r2 (float): radius for circle 2.</dd>
+<dt>Returns:</dt>
+<dd>(bool): True if circles overlap.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.euclidean_distance">
+<code class="descname">euclidean_distance</code><span class="sig-paren">(</span><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.euclidean_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.euclidean_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the euclidean distance between two points.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>x1 (float): x coordinate for point 1.
+y1 (float): y coordinate for point 1.
+x2 (float): x coordinate for point 2.
+y2 (float): y coordinate for point 2.</dd>
+<dt>Returns:</dt>
+<dd>(float): euclidean distance.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.hood">
+<code class="descname">hood</code><span class="sig-paren">(</span><em>cell</em>, <em>radius=1</em>, <em>remove_center=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.hood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.hood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the cells that comprise the neighborhood of ‘cell’.</p>
+<blockquote>
+<div>Note: with radius=1 and remove_center=False, the result is the Moore neighborhood of ‘cell’ (i.e. ‘cell’ itself and the 8 adjacent cells). With radius=&gt;2, the result is an extended Moore neighborhood with the numer of cells=(2*radius+1)^2 (subtract 1 if remove_center=True)</div></blockquote>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>cell (tuple): (x,y), patch coordinates of the center cell.
+radius (int): how many grid cells (Tchebychev distance) any cell needs to be from the center to be included in the neighborhood.
+remove_center (bool): If True ‘cell’ is not included in the final list of cells.</dd>
+<dt>Returns:</dt>
+<dd>(list) of tuples with the coordinates ‘(x,y)’ of cells comprising the neighborhood of ‘cell’.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.in_bounds">
+<code class="descname">in_bounds</code><span class="sig-paren">(</span><em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.in_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.in_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust point to grid.</p>
+<p>Check if ‘pos’ is withn the grid boundaries. If so returns ‘pos’.
+If not adjust ‘pos’ to fall within boundaries. This method implements adjustment considering the grid as a Torus (i.e. extremities are adjacent).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>pos (tuple): (x,y) coordinates pair.</dd>
+<dt>Returns:</dt>
+<dd>(tuple): adjusted (if necessary) (x,y) coordinates pair.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.line_between_points">
+<code class="descname">line_between_points</code><span class="sig-paren">(</span><em>x0</em>, <em>y0</em>, <em>x1</em>, <em>y1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.line_between_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.line_between_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the cell coordinates (integers) for the aproximate line between two cells using bresenham’s line algorithm.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>x0 (int): x coordinate for initial cell.
+y0 (int): y coordinate for initial cell.
+x1 (int): x coordinate for final cell.
+y1 (int): x coordinate for final cell.</dd>
+<dt>Returns:</dt>
+<dd>(list): list of tuples with cells coordinates. The initial and final cells are excluded.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.line_overlap_circle">
+<code class="descname">line_overlap_circle</code><span class="sig-paren">(</span><em>cx</em>, <em>cy</em>, <em>r</em>, <em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.line_overlap_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.line_overlap_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the straight line connecting two point overlaps a circle.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>x1 (float): x coordinate for point 1.
+y1 (float): y coordinate for point 1.
+x2 (float): x coordinate for point 2.
+y2 (float): y coordinate for point 2.
+cx (float): x coordinate for the center of the circle.
+cy (float): y coordinate for the center of the circle.
+r (float): radius for circle.</dd>
+<dt>Returns:</dt>
+<dd>(bool): True if line and circle overlap.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.load_surface">
+<code class="descname">load_surface</code><span class="sig-paren">(</span><em>surface</em>, <em>dim_names</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.load_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.load_surface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the surface from a nparray.</p>
+<blockquote>
+<div>This could have been read from a file or passed by another program.</div></blockquote>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>surface (nparray): nparray with values to be loaded as layers in the surface. Minimum of 2 dimensions required, in which case only one layer of information is represented. The x and y dimensions of the grid will be determined by the x and y length of this argument.
+dim_names (list): a list of names for the layers in the 3d dimesnion of the surface argument. If ‘surface’ is a 2d array, this argument will be ignored.</dd>
+<dt>Returns:</dt>
+<dd>None.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.pDist">
+<code class="descname">pDist</code><span class="sig-paren">(</span><em>px</em>, <em>py</em>, <em>sx1</em>, <em>sy1</em>, <em>sx2</em>, <em>sy2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.pDist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.pDist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the minimum euclidean distance between a point and a line segment.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>px (float): x coordinate for point.
+py (float): y coordinate for point.
+sx1 (float): x coordinate for point 1 in line segment.
+sy1 (float): y coordinate for point 1 in line segment.
+sx2 (float): x coordinate for point 2 in line segment.
+sy2 (float): y coordinate for point 2 in line segment.</dd>
+<dt>Returns:</dt>
+<dd>(float): minimum euclidean distance between point and line segment.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.point_within_circle">
+<code class="descname">point_within_circle</code><span class="sig-paren">(</span><em>x1</em>, <em>y1</em>, <em>r1</em>, <em>x2</em>, <em>y2</em>, <em>distance_func</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.point_within_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.point_within_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a point is within a circle.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>x1 (float): x coordinate for point.
+y1 (float): y coordinate for point.
+r1 (float): radius.
+x2 (float): x coordinate for the center of the circle.
+y2 (float): y coordinate for the center of the circle..</dd>
+<dt>Returns:</dt>
+<dd>(bool): True if point is withn circle.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.rectangle_overlap_circle">
+<code class="descname">rectangle_overlap_circle</code><span class="sig-paren">(</span><em>cx</em>, <em>cy</em>, <em>r</em>, <em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em>, <em>x3</em>, <em>y3</em>, <em>x4</em>, <em>y4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.rectangle_overlap_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.rectangle_overlap_circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check a rectangle and a circle overlap.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>cx (float): x coordinate for circle center.
+cy (float): y coordinate for circle center.
+r1 (float): radius for circle.
+x1 (float): x coordinate for 1st rectangle vertice.
+y1 (float): y coordinate for 1st rectangle vertice.
+x2 (float): x coordinate for 2nd rectangle vertice.
+x2 (float): y coordinate for 2nd rectangle vertice.
+x3 (float): x coordinate for 3rd rectangle vertice.
+y3 (float): y coordinate for 3rd rectangle vertice.
+x4 (float): x coordinate for 4th rectangle vertice.
+x4 (float): y coordinate for 4th rectangle vertice.</dd>
+<dt>Returns:</dt>
+<dd>(bool): True if circle and rectangle overlap.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.scaled_distance">
+<code class="descname">scaled_distance</code><span class="sig-paren">(</span><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em>, <em>scale=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.scaled_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.scaled_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the euclidean distance between two points and scales it.</p>
+<blockquote>
+<div>Note:Since each cell can represent any distance, this method can be used to calculate the distance in meter, kilometer, etc instead of grid cells.</div></blockquote>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>x1 (float): x coordinate for point 1.
+y1 (float): y coordinate for point 1.
+x2 (float): x coordinate for point 2.
+y2 (float): y coordinate for point 2.
+scale (float): scaling factor.</dd>
+<dt>Returns:</dt>
+<dd>(float): euclidean distance multiplied by ‘scale’.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology.Rectangular_Grid.value">
+<code class="descname">value</code><span class="sig-paren">(</span><em>dim</em>, <em>cell</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/topology.html#Rectangular_Grid.value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#topology.Rectangular_Grid.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify the value in the ‘dim’ layer (dimension) of information in the grid’s surface for the ‘cell’.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>dim (str): name of dimension.
+cell (tuple): (x,y), patch coordinates.</dd>
+<dt>Returns:</dt>
+<dd>(float): the value of ‘cell’ in ‘dim’</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="world.html" class="btn btn-neutral" title="World Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Fabio Frazao.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>World Module &mdash; py_ibm 0.1.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="py_ibm 0.1.1 documentation" href="index.html"/>
+        <link rel="next" title="Topology Module" href="topology.html"/>
+        <link rel="prev" title="Welcome to py_ibm’s documentation!" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> py_ibm
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">World Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology.html">Topology Module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">py_ibm</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>World Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/world.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-world">
+<span id="world-module"></span><h1>World Module<a class="headerlink" href="#module-world" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="world.World">
+<em class="property">class </em><code class="descclassname">world.</code><code class="descname">World</code><span class="sig-paren">(</span><em>topology</em>, <em>steps_in_day=24</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/world.html#World"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#world.World" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide observer methods and control the schedule and execution of simulations.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>topology (Rectangular_Grid instance): grid object on which agents will live.
+steps_in_day (int): number of steps in each day.</dd>
+<dt>Attributes:</dt>
+<dd>topology (Rectangular_Grid instance): grid object on which agents will live.
+steps_in_day (int): number of steps in each day.
+day (int): current day.
+step (int): current step.</dd>
+<dt>Usage:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grid01</span><span class="o">=</span><span class="n">Rectangular_Grid</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">y_max</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">ndim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">dim_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;light_intensity&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">world01</span><span class="o">=</span><span class="n">World</span><span class="p">(</span><span class="n">topology</span><span class="o">=</span><span class="n">grid01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">world01</span><span class="p">)</span>
+<span class="go">World object</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="method">
+<dt id="world.World.active_agents">
+<code class="descname">active_agents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/world.html#World.active_agents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#world.World.active_agents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of active agents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="world.World.ask">
+<code class="descname">ask</code><span class="sig-paren">(</span><em>agents</em>, <em>methodname</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/world.html#World.ask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#world.World.ask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make ‘agents’ execute the ‘methodname’</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>agents (list): A list of agents (instances).
+methodname (str): name of the methods to be executed.
+args: argumrntd to br passed to ‘methodname.
+kwargs:keyword arguments to be passed to ‘methodname’</dd>
+<dt>Returns:</dt>
+<dd>None.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="world.World.create_agents">
+<code class="descname">create_agents</code><span class="sig-paren">(</span><em>agent_type</em>, <em>n</em>, <em>pos=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/world.html#World.create_agents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#world.World.create_agents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create ‘n’ ‘agent_type’ agents.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>agent_type (class): the type (class) of agents to be created
+n (int): number of agents to be created
+pos (list,None): a list of ‘n’ tuples ‘(x,y)’ with the coordinates in which agents will be created. If set to None, agents are created in random positions.
+kwargs: the arguments to be passed to the ‘agent_type’ class. All agents will be created with this same set of arguments.</dd>
+<dt>Returns:</dt>
+<dd>None.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="world.World.increment_time">
+<code class="descname">increment_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/world.html#World.increment_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#world.World.increment_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increment step, day, month and year counters.</p>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>None.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="world.World.run_schedule">
+<code class="descname">run_schedule</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/world.html#World.run_schedule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#world.World.run_schedule" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is supposed to be overridden.
+It should include the schedules of agent classes plus any other action taken by the world, such as incrementing time or calculating summary statistics</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="world.World.run_simulation">
+<code class="descname">run_simulation</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/world.html#World.run_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#world.World.run_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the schedule n times.</p>
+<blockquote>
+<div>Note: actions to be performed before or after all the schedule could be included here. An example would be writing model outputs to a file every 10 steps.</div></blockquote>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>n (int): number of times (repetitions) the schedule should be run.</dd>
+<dt>Returns:</dt>
+<dd>None.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="topology.html" class="btn btn-neutral float-right" title="Topology Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to py_ibm’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Fabio Frazao.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
